@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.shopeasy.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+
+    <name>ShopEasy</name>
+    <description>Modern Shopping Experience</description>
+    <author email="support@shopeasy.com" href="https://shopeasy.com">ShopEasy Team</author>
+
+    <content src="index.html" />
+
+    <!-- Location Plugin -->
+    <plugin name="cordova-plugin-geolocation" spec="^4.1.0" />
+
+    <!-- Permissions -->
+    <plugin name="cordova-plugin-android-permissions" spec="^1.1.5" />
+
+    <!-- Access -->
+    <access origin="*" />
+
+    <!-- Geolocation preferences -->
+    <preference name="GeolocationPermissions" value="true" />
+    <preference name="GeolocationHighAccuracy" value="true" />
+    <preference name="GeolocationTimeout" value="10000" />
+
+    <!-- Android specific -->
+    <platform name="android">
+        <!-- Location permissions -->
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
+        <!-- Features -->
+        <uses-feature android:name="android.hardware.location" android:required="false" />
+        <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+        <uses-feature android:name="android.hardware.location.network" android:required="false" />
+
+        <!-- WebView settings -->
+        <preference name="AndroidWebViewGeolocationPermissionsOrigin" value="*" />
+        <preference name="AndroidInsecureFileModeEnabled" value="true" />
+        <preference name="allowFileAccess" value="true" />
+        <preference name="allowFileAccessFromFileURLs" value="true" />
+        <preference name="allowUniversalAccessFromFileURLs" value="true" />
+    </platform>
+
+</widget>
