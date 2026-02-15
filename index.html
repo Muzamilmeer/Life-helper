@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.3, maximum-scale=2.0, user-scalable=yes">
+    <title>ShopEasy - Premium Shopping Experience</title>
+
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="logo-container">
+                <i class="fas fa-shopping-bag logo-icon"></i>
+                <h1 class="app-title">ShopEasy</h1>
+                <p class="tagline">Premium Shopping Experience</p>
+            </div>
+            <div class="loading-animation">
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <button class="open-app-btn" id="open-app-btn" onclick="
+                document.getElementById('splash-screen').style.display='none';
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('main-app').style.opacity='1';
+                document.getElementById('main-app').style.display='block';
+            ">
+                <i class="fas fa-play"></i>
+                Open App
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="main-app hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>ShopEasy</span>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search products..." id="search-input">
+                    </div>
+                    <div class="header-actions">
+                        <button class="lock-toggle-btn" id="lock-toggle-btn" onclick="showCustomAlert('🔒 This feature is under development by MUZAMIL!\\n\\n⏳ Coming Soon! 🚀')" title="Lock/Unlock App">
+                            <i class="fas fa-lock"></i> Lock App
+                        </button>
+                        <div class="biometric-login" onclick="showCustomAlert('🔐 This feature is under development by MUZAMIL!\\n\\n⏳ Coming Soon! 🚀')" title="Biometric Login">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <div class="theme-toggle" id="theme-toggle">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="cart-icon" id="cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cart-count">0</span>
+                        </div>
+                        <div class="user-profile" onclick="openAboutModal()" style="cursor: pointer;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-categories">
+            <div class="container">
+                <div class="categories">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="fashion">Fashion</button>
+                    <button class="category-btn" data-category="electronics">Watches</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Shop Latest Fashion & Accessories</h2>
+                <p>Discover trendy clothing, watches and accessories at best prices with fast delivery</p>
+                <button class="cta-btn">Shop Now</button>
+            </div>
+            <div class="hero-image">
+                <div class="hero-chat-btn" onclick="openChat()" title="Live Chat Support">
+                    <i class="fas fa-comments"></i>
+                    <span class="hero-chat-text">Chat with Muzamil</span>
+                    <span class="chat-notification-hero" id="chat-notification-hero">1</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Featured Products</h3>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                        <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+                <div class="products-grid" id="products-container">
+                    <!-- Products will be dynamically loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cart-sidebar">
+            <div class="cart-header">
+                <h3>Shopping Cart</h3>
+                <button class="close-cart" id="close-cart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be displayed here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total: ₹<span id="cart-total">0</span></strong>
+                </div>
+
+                <!-- User Details Form -->
+                <div class="user-details-form" id="user-details-form" style="display: none;">
+                    <h4>📝 Enter Your Details</h4>
+                    <form id="checkout-form">
+                        <div class="form-group">
+                            <label>👤 Full Name *</label>
+                            <input type="text" id="user-name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>📱 Phone Number *</label>
+                            <input type="tel" id="user-phone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>📧 Email Address</label>
+                            <input type="email" id="user-email" placeholder="Enter your email (optional)">
+                        </div>
+                        <div class="form-group">
+                            <label>🏠 Address *</label>
+                            <textarea id="user-address" placeholder="Enter your full address" required rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="location-btn" onclick="getLiveLocation()">
+                                📍 Get Live Location
+                            </button>
+                            <button type="button" class="location-btn manual-location" onclick="useManualLocation()" style="background: #6c757d; margin-left: 10px;">
+                                📝 Manual Entry
+                            </button>
+                            <span id="location-status"></span>
+                        </div>
+                        <button type="button" class="proceed-payment-btn" onclick="proceedWithPayment()">
+                            Continue to Payment 💳
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Payment Options -->
+                <button class="checkout-btn razorpay-btn" onclick="payWithRazorpay()" id="checkout-btn">
+                    <i class="fas fa-credit-card"></i> Pay with Razorpay 💳
+                </button>
+                <button class="track-order-btn" onclick="trackOrder()">
+                    <i class="fas fa-map-marker-alt"></i> Track Your Order
+                </button>
+            </div>
+        </div>
+
+        <!-- Cart Overlay -->
+        <div class="cart-overlay" id="cart-overlay"></div>
+
+        <!-- Receipt Modal -->
+        <div class="receipt-modal-overlay" id="receipt-modal-overlay">
+            <div class="receipt-modal">
+                <div class="receipt-header">
+                    <h2>🧾 Payment Receipt</h2>
+                    <button class="receipt-close" onclick="closeReceiptModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="receipt-content" id="receipt-content">
+                    <!-- Receipt content will be generated here -->
+                </div>
+                <div class="receipt-actions">
+                    <button class="receipt-btn download" onclick="downloadReceipt()">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <button class="receipt-btn share" onclick="shareReceipt()">
+                        <i class="fas fa-share"></i> Share Receipt
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biometric Login Modal -->
+        <div class="modal-overlay" id="biometric-modal-overlay">
+            <div class="biometric-modal" id="biometric-modal">
+                <div class="modal-header">
+                    <h2><i class="fas fa-shield-alt"></i> Secure Login</h2>
+                    <button class="modal-close" onclick="closeBiometricModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <div class="biometric-options">
+                        <div class="biometric-setup-info">
+                            <i class="fas fa-shield-alt" style="font-size: 3rem; color: #667eea; margin-bottom: 20px;"></i>
+                            <h3>Setup Biometric Security</h3>
+                            <p>Choose your preferred authentication method to secure your app</p>
+                        </div>
+
+                        <div class="biometric-method" onclick="showCustomAlert('🔐 This feature is under development by MUZAMIL!\\n\\n⏳ Coming Soon! 🚀')">
+                            <div class="biometric-icon">
+                                <i class="fas fa-fingerprint"></i>
+                            </div>
+                            <h3>Setup Fingerprint</h3>
+                            <p>Register your fingerprint for secure access</p>
+                            <div class="biometric-status" id="fingerprint-status">
+                                <span class="status-text">Click to setup fingerprint</span>
+                            </div>
+                        </div>
+
+                        <div class="biometric-method" onclick="showCustomAlert('🔐 This feature is under development by MUZAMIL!\\n\\n⏳ Coming Soon! 🚀')">
+                            <div class="biometric-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <h3>Setup Face Recognition</h3>
+                            <p>Register your face for instant access</p>
+                            <div class="biometric-status" id="face-status">
+                                <span class="status-text">Click to setup face recognition</span>
+                            </div>
+                        </div>
+
+                        <div class="biometric-method" onclick="showCustomAlert('🔐 This feature is under development by MUZAMIL!\\n\\n⏳ Coming Soon! 🚀')">
+                            <div class="biometric-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <h3>Setup Password Lock</h3>
+                            <p>Use password if biometric is not available</p>
+                            <div class="biometric-status" id="password-setup-status">
+                                <span class="status-text">Click to setup password</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="biometric-fallback">
+                        <p>Having trouble? <a href="#" onclick="showPasswordLogin()">Use password instead</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Tracking Modal -->
+        <div class="modal-overlay" id="order-modal-overlay">
+            <div class="order-modal" id="order-modal">
+                <div class="modal-header">
+                    <h2><i class="fas fa-shipping-fast"></i> Order Tracking</h2>
+                    <button class="modal-close" onclick="closeOrderModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <div class="tracking-info">
+                        <div class="order-status">
+                            <h3>Your Order Status</h3>
+                            <div class="status-timeline">
+                                <div class="status-step active">
+                                    <div class="status-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="status-text">
+                                        <h4>Order Confirmed</h4>
+                                        <p>Your order has been received and confirmed</p>
+                                    </div>
+                                </div>
+                                <div class="status-step active">
+                                    <div class="status-icon">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div class="status-text">
+                                        <h4>Processing</h4>
+                                        <p>Your order is being prepared</p>
+                                    </div>
+                                </div>
+                                <div class="status-step">
+                                    <div class="status-icon">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="status-text">
+                                        <h4>Out for Delivery</h4>
+                                        <p>Your order is on the way</p>
+                                    </div>
+                                </div>
+                                <div class="status-step">
+                                    <div class="status-icon">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="status-text">
+                                        <h4>Delivered</h4>
+                                        <p>Order delivered successfully</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-delivery">
+                            <div class="delivery-contact">
+                                <h4><i class="fas fa-phone-alt"></i> Need Help with Your Order?</h4>
+                                <p>Contact our customer support for any queries or issues with your order.</p>
+
+                                <div class="contact-options">
+                                    <a href="https://wa.me/919103594759?text=Hi%20Muzamil,%20I%20need%20help%20with%20my%20order%20tracking%20from%20ShopEasy" 
+                                       target="_blank" class="whatsapp-contact">
+                                        <i class="fab fa-whatsapp"></i>
+                                        <div class="contact-info">
+                                            <span class="contact-title">WhatsApp Support</span>
+                                            <span class="contact-number">+91 9103594759</span>
+                                        </div>
+                                    </a>
+
+                                    <div class="location-info">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div class="location-details">
+                                            <span class="location-title">Delivery Location</span>
+                                            <span class="location-text">Track your order location in real-time</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="estimated-delivery">
+                                <h4><i class="fas fa-clock"></i> Estimated Delivery</h4>
+                                <div class="delivery-time">
+                                    <span class="delivery-date">Within 2-3 Business Days</span>
+                                    <span class="delivery-note">Free delivery on orders above ₹500</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Chat Widget -->
+        <div class="chat-widget" id="chat-widget">
+            <div class="chat-header" onclick="toggleChat()">
+                <div class="chat-header-content">
+                    <div class="chat-avatar">
+                        <img src="https://res.cloudinary.com/dxjkbpmgm/image/upload/v1758388279/Picsart_25-09-17_00-31-36-635_rpje2n.png" alt="Support">
+                    </div>
+                    <div class="chat-info">
+                        <h4>Muzamil Support</h4>
+                        <span class="chat-status online">Online</span>
+                    </div>
+                </div>
+                <div class="chat-toggle">
+                    <i class="fas fa-chevron-up" id="chat-toggle-icon"></i>
+                </div>
+            </div>
+
+            <div class="chat-body" id="chat-body">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message support-message">
+                        <div class="message-avatar">
+                            <img src="https://res.cloudinary.com/dxjkbpmgm/image/upload/v1744384921/IMG_20250411_202120_wx6x6n.png" alt="Support">
+                        </div>
+                        <div class="message-content">
+                            <p>Hi! I'm Muzamil. How can I help you today?</p>
+                            <span class="message-time">Just now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-quick-replies">
+                        <button class="quick-reply" onclick="sendQuickReply('Track my order')">Track Order</button>
+                        <button class="quick-reply" onclick="sendQuickReply('Need help with payment')">Payment Help</button>
+                        <button class="quick-reply" onclick="sendQuickReply('Product question')">Product Info</button>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input" placeholder="Type your message...">
+                        <button onclick="sendMessage()" id="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Floating Button (when minimized) -->
+        <div class="chat-float-btn" id="chat-float-btn" onclick="openChat()">
+            <i class="fas fa-comments"></i>
+            <span class="chat-notification" id="chat-notification">1</span>
+        </div>
+
+        <!-- About Us Modal -->
+        <div class="modal-overlay" id="about-modal-overlay">
+            <div class="about-modal" id="about-modal">
+                <div class="modal-header">
+                    <h2><i class="fas fa-user-circle"></i> About Developer</h2>
+                    <button class="modal-close" onclick="closeAboutModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <div class="developer-profile">
+                        <div class="developer-avatar">
+                            <img src="https://res.cloudinary.com/dxjkbpmgm/image/upload/v1744384921/IMG_20250411_202120_wx6x6n.png" alt="Muzamil - Developer" class="developer-profile-img">
+                        </div>
+                        <div class="developer-info">
+                            <h3>Muzamil</h3>
+                            <p class="developer-role">Full-Stack Developer, Designer & Founder</p>
+                            <p class="developer-description">
+                                The visionary behind ShopEasy, Muzamil is a passionate full-stack developer and the complete team behind this amazing platform. He handles everything from beautiful UI/UX design to backend development, ensuring smooth user experiences and robust functionality. With expertise in modern web technologies, server architecture, databases, digital marketing, customer support, and quality assurance - Muzamil brings innovative solutions to every aspect of the business. His dedication to customer satisfaction and meticulous attention to detail keeps ShopEasy running flawlessly. Follow him on YouTube @muzamilmeer for tech content and development tutorials!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="developer-skills">
+                        <h4><i class="fas fa-tools"></i> Skills & Expertise</h4>
+                        <div class="skills-grid">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">UI/UX Design</span>
+                            <span class="skill-tag">Figma</span>
+                            <span class="skill-tag">Adobe XD</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Django</span>
+                            <span class="skill-tag">PostgreSQL</span>
+                            <span class="skill-tag">AWS</span>
+                            <span class="skill-tag">Digital Marketing</span>
+                            <span class="skill-tag">Social Media</span>
+                            <span class="skill-tag">Customer Service</span>
+                            <span class="skill-tag">Quality Assurance</span>
+                            <span class="skill-tag">Team Leadership</span>
+                        </div>
+                    </div>
+
+                    <div class="company-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label">Happy Customers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label">Products Sold</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">99%</div>
+                            <div class="stat-label">Satisfaction Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Customer Support</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-section">
+                        <h4><i class="fas fa-phone"></i> Contact Information</h4>
+                        <div class="contact-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <a href="https://wa.me/919103594759" target="_blank">+91 9103594759</a>
+                        </div>
+                    </div>
+
+                    <div class="social-section">
+                        <h4><i class="fas fa-share-alt"></i> Follow Me</h4>
+                        <div class="social-links-modal">
+                            <a href="https://www.facebook.com/kavinmatnick?mibextid=ZbWKwL" target="_blank" class="social-link-modal facebook">
+                                <i class="fab fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="https://youtube.com/@muzamilmeer?si=rPVNKYWBki2ofCTZ" target="_blank" class="social-link-modal youtube">
+                                <i class="fab fa-youtube"></i>
+                                <span>YouTube</span>
+                            </a>
+                            <a href="https://www.instagram.com/root.access.granted?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="social-link-modal instagram">
+                                <i class="fab fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                            <a href="https://wa.me/919103594759" target="_blank" class="social-link-modal whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mission-section">
+                        <h4><i class="fas fa-bullseye"></i> Mission</h4>
+                        <p>At ShopEasy, our mission is to revolutionize the online shopping experience by providing customers with a seamless, enjoyable, and trustworthy platform. We believe that shopping should be easy, fun, and accessible to everyone, everywhere.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>ShopEasy</h4>
+                        <p>Your premium shopping destination with quality products and exceptional service.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Follow Us</h4>
+                        <div class="social-links">
+                            <a href="https://www.facebook.com/kavinmatnick?mibextid=ZbWKwL" target="_blank"><i class="fab fa-facebook"></i></a>
+                            <a href="https://wa.me/919103594759" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://www.instagram.com/root.access.granted?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a href="https://youtube.com/@muzamilmeer?si=rPVNKYWBki2ofCTZ" target="_blank"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 ShopEasy. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Unlock Overlay -->
+    <div id="unlock-overlay" class="unlock-overlay" style="display: none;">
+        <div class="unlock-content">
+            <div class="unlock-icon">
+                <i class="fas fa-lock" id="unlock-lock-icon"></i>
+            </div>
+            <h2>App Locked</h2>
+            <p id="unlock-message">Use your registered biometric to unlock</p>
+
+            <div class="unlock-buttons">
+                <button class="unlock-btn primary" id="biometric-unlock-btn" onclick="attemptBiometricUnlock()">
+                    <i class="fas fa-fingerprint" id="unlock-btn-icon"></i>
+                    <span id="unlock-btn-text">Unlock with Biometric</span>
+                </button>
+            </div>
+
+            <div class="unlock-status" id="unlock-status">
+                <span class="status-text">Ready to authenticate</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
