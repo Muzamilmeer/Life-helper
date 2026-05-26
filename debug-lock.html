@@ -1,279 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5">
-    <title>Debug Lock/Unlock - ShopEasy</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f8f9fa;
-        }
-        .debug-panel {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .status-indicator {
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .status-unlocked { background: #d4edda; color: #155724; }
-        .status-locked { background: #f8d7da; color: #721c24; }
-        .status-setup { background: #fff3cd; color: #856404; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Real Biometric Lock Demo</title>
 
-        .test-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 14px;
-        }
-        .test-btn:hover { background: #5a6fd8; }
-        .test-btn.red { background: #ff6b6b; }
-        .test-btn.green { background: #51cf66; }
-        .test-btn.gray { background: #6c757d; opacity: 0.6; cursor: not-allowed; }
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-        .main-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
 
-        .blurred {
-            filter: blur(5px);
-            pointer-events: none;
-        }
+    body{
+        font-family:Arial,sans-serif;
+        background:#f4f6f9;
+        min-height:100vh;
+    }
 
-        .console-log {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 12px;
-            height: 200px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
+    .topbar{
+        background:#667eea;
+        color:white;
+        padding:20px;
+        text-align:center;
+        font-size:22px;
+        font-weight:bold;
+    }
 
-        .unlock-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
+    .container{
+        padding:30px;
+    }
 
-        .unlock-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-        }
-    </style>
+    .card{
+        background:white;
+        padding:25px;
+        border-radius:15px;
+        margin-bottom:20px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .status{
+        padding:15px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-weight:bold;
+    }
+
+    .locked{
+        background:#ffe3e3;
+        color:#c92a2a;
+    }
+
+    .unlocked{
+        background:#d3f9d8;
+        color:#2b8a3e;
+    }
+
+    button{
+        padding:14px 20px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:15px;
+        margin:5px;
+        transition:0.2s;
+    }
+
+    button:hover{
+        transform:scale(1.03);
+    }
+
+    .primary{
+        background:#667eea;
+        color:white;
+    }
+
+    .danger{
+        background:#ff6b6b;
+        color:white;
+    }
+
+    .success{
+        background:#51cf66;
+        color:white;
+    }
+
+    .disabled{
+        opacity:0.5;
+        cursor:not-allowed;
+    }
+
+    .main-app{
+        background:white;
+        padding:40px;
+        border-radius:15px;
+        transition:0.3s;
+    }
+
+    .blurred{
+        filter:blur(6px);
+        pointer-events:none;
+        user-select:none;
+    }
+
+    .overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.88);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999;
+    }
+
+    .overlay-box{
+        background:white;
+        width:350px;
+        padding:35px;
+        border-radius:20px;
+        text-align:center;
+    }
+
+    .overlay-box i{
+        font-size:60px;
+        color:#667eea;
+        margin-bottom:20px;
+    }
+
+    .log-box{
+        background:#1e1e1e;
+        color:#00ff88;
+        height:220px;
+        overflow:auto;
+        padding:15px;
+        border-radius:10px;
+        margin-top:15px;
+        font-family:monospace;
+        font-size:13px;
+        white-space:pre-line;
+    }
+</style>
 </head>
+
 <body>
-    <div class="debug-panel">
-        <h2>🔍 Lock/Unlock Debug Panel</h2>
 
-        <div id="status-display" class="status-indicator status-setup">
-            📱 Status: Biometric Setup Required
+<div class="topbar">
+    🔐 Real Biometric Lock Demo
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <div id="status" class="status unlocked">
+            ✅ App Unlocked
         </div>
 
-        <div style="margin: 20px 0;">
-            <h3>Debug Actions:</h3>
-            <button class="test-btn" onclick="simulateBiometricSetup()">
-                <i class="fas fa-fingerprint"></i> Simulate Biometric Setup
-            </button>
-            <button class="test-btn" onclick="testLockApp()" id="lock-btn">
-                <i class="fas fa-lock"></i> Test Lock
-            </button>
-            <button class="test-btn red" onclick="testUnlockApp()">
-                <i class="fas fa-unlock"></i> Force Unlock
-            </button>
-            <button class="test-btn green" onclick="clearLogs()">
-                <i class="fas fa-trash"></i> Clear Logs
-            </button>
-        </div>
+        <button class="primary" onclick="registerBiometric()">
+            <i class="fas fa-fingerprint"></i>
+            Setup Biometrics
+        </button>
 
-        <div>
-            <h3>Console Output:</h3>
-            <div id="console-output" class="console-log">
-                Console output will appear here...
-            </div>
-        </div>
+        <button id="lockBtn" class="danger disabled" disabled onclick="lockApp()">
+            <i class="fas fa-lock"></i>
+            Lock App
+        </button>
+
+        <button class="success" onclick="clearLogs()">
+            Clear Logs
+        </button>
+
+        <div id="logs" class="log-box"></div>
+
     </div>
 
-    <div id="main-content" class="main-content">
-        <h1>🛍️ ShopEasy Main App</h1>
-        <p>This is the main app content that gets blurred when locked.</p>
-        <button class="test-btn">Sample Button</button>
-        <button class="test-btn">Another Button</button>
+    <div id="mainApp" class="main-app">
+        <h1>🛍️ ShopEasy App</h1>
+        <br>
+        <p>This content becomes inaccessible when the app is locked.</p>
+
+        <br>
+
+        <button class="primary">Buy Product</button>
+        <button class="primary">Add to Cart</button>
+        <button class="primary">Wishlist</button>
     </div>
 
-    <!-- Unlock Overlay -->
-    <div id="unlock-overlay" class="unlock-overlay">
-        <div class="unlock-content">
-            <i class="fas fa-lock" style="font-size: 3rem; color: #667eea; margin-bottom: 20px;"></i>
-            <h2>App Locked</h2>
-            <p>Testing unlock functionality</p>
-            <button class="test-btn" onclick="simulateUnlock()">
-                <i class="fas fa-fingerprint"></i> Simulate Biometric Unlock
-            </button>
-            <button class="test-btn red" onclick="forceUnlock()">
-                <i class="fas fa-key"></i> Force Unlock
-            </button>
-        </div>
+</div>
+
+<div id="overlay" class="overlay">
+
+    <div class="overlay-box">
+
+        <i class="fas fa-lock"></i>
+
+        <h2>Application Locked</h2>
+
+        <br>
+
+        <p>Please verify your identity</p>
+
+        <br>
+
+        <button class="primary" onclick="authenticateUser()">
+            <i class="fas fa-fingerprint"></i>
+            Unlock with Biometrics
+        </button>
+
     </div>
 
-    <script>
-        // Debug variables
-        let isAppLocked = false;
-        let biometricSetupCompleted = false;
-        let isAuthenticated = false;
-        let logs = [];
+</div>
 
-        // Debug logging function
-        function debugLog(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            const logMessage = `[${timestamp}] ${message}`;
-            logs.push(logMessage);
+<script>
 
-            const consoleOutput = document.getElementById('console-output');
-            consoleOutput.innerHTML = logs.slice(-20).join('\n');
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+let biometricReady = false;
+let locked = false;
 
-            console.log(logMessage);
-        }
+const logs = document.getElementById("logs");
 
-        // Update status display
-        function updateStatus() {
-            const statusDiv = document.getElementById('status-display');
-            const lockBtn = document.getElementById('lock-btn');
+function log(message){
 
-            if (isAppLocked) {
-                statusDiv.className = 'status-indicator status-locked';
-                statusDiv.innerHTML = '🔒 Status: App Locked';
-                lockBtn.innerHTML = '<i class="fas fa-unlock"></i> Test Unlock';
-                lockBtn.className = 'test-btn red';
-            } else if (!biometricSetupCompleted) {
-                statusDiv.className = 'status-indicator status-setup';
-                statusDiv.innerHTML = '📱 Status: Biometric Setup Required';
-                lockBtn.innerHTML = '<i class="fas fa-fingerprint"></i> Setup Required';
-                lockBtn.className = 'test-btn gray';
-            } else {
-                statusDiv.className = 'status-indicator status-unlocked';
-                statusDiv.innerHTML = '🔓 Status: App Unlocked (Ready to Lock)';
-                lockBtn.innerHTML = '<i class="fas fa-lock"></i> Test Lock';
-                lockBtn.className = 'test-btn';
-            }
-        }
+    const time = new Date().toLocaleTimeString();
 
-        // Simulate biometric setup
-        function simulateBiometricSetup() {
-            debugLog('🔐 Simulating biometric setup...');
-            biometricSetupCompleted = true;
-            isAuthenticated = true;
-            debugLog('✅ Biometric setup completed!');
-            updateStatus();
-        }
+    logs.innerHTML += `[${time}] ${message}\n`;
 
-        // Test lock function
-        function testLockApp() {
-            if (!biometricSetupCompleted) {
-                debugLog('❌ Cannot lock: Biometric setup required');
-                alert('Please complete biometric setup first!');
-                return;
-            }
+    logs.scrollTop = logs.scrollHeight;
 
-            debugLog('🔒 Locking app...');
-            isAppLocked = true;
-            isAuthenticated = false;
+    console.log(message);
+}
 
-            // Add blur effect
-            const mainContent = document.getElementById('main-content');
-            mainContent.classList.add('blurred');
+function updateStatus(){
 
-            // Show unlock overlay
-            const overlay = document.getElementById('unlock-overlay');
-            overlay.style.display = 'flex';
+    const status = document.getElementById("status");
 
-            debugLog('✅ App locked successfully');
-            updateStatus();
-        }
+    if(locked){
 
-        // Test unlock function
-        function testUnlockApp() {
-            debugLog('🔓 Force unlocking app...');
-            unlockApp();
-        }
+        status.className = "status locked";
+        status.innerHTML = "🔒 App Locked";
 
-        // Simulate biometric unlock
-        function simulateUnlock() {
-            debugLog('🔐 Simulating biometric authentication...');
+    }else{
 
-            setTimeout(() => {
-                debugLog('✅ Biometric authentication successful!');
-                unlockApp();
-            }, 1000);
-        }
+        status.className = "status unlocked";
+        status.innerHTML = "✅ App Unlocked";
+    }
+}
 
-        // Force unlock
-        function forceUnlock() {
-            debugLog('🚨 Force unlock triggered');
-            unlockApp();
-        }
+async function registerBiometric(){
 
-        // Unlock app function
-        function unlockApp() {
-            debugLog('🔓 Unlocking app...');
+    if(!window.PublicKeyCredential){
 
-            isAppLocked = false;
-            isAuthenticated = true;
+        alert("WebAuthn not supported in this browser");
+        return;
+    }
 
-            // Remove blur effect
-            const mainContent = document.getElementById('main-content');
-            mainContent.classList.remove('blurred');
-            debugLog('✅ Blur removed from main content');
+    try{
 
-            // Hide unlock overlay
-            const overlay = document.getElementById('unlock-overlay');
-            overlay.style.display = 'none';
-            debugLog('✅ Unlock overlay hidden');
+        log("Starting biometric registration...");
 
-            debugLog('✅ App unlocked successfully!');
-            updateStatus();
-        }
+        const publicKey = {
 
-        // Clear logs
-        function clearLogs() {
-            logs = [];
-            document.getElementById('console-output').innerHTML = 'Logs cleared...';
-        }
+            challenge: new Uint8Array(32),
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            debugLog('🚀 Debug panel loaded');
-            updateStatus();
+            rp: {
+                name: "ShopEasy"
+            },
+
+            user: {
+                id: new Uint8Array(16),
+                name: "user@example.com",
+                displayName: "Demo User"
+            },
+
+            pubKeyCredParams: [
+                {
+                    type: "public-key",
+                    alg: -7
+                }
+            ],
+
+            authenticatorSelection: {
+                authenticatorAttachment: "platform",
+                userVerification: "required"
+            },
+
+            timeout: 60000,
+
+            attestation: "direct"
+        };
+
+        await navigator.credentials.create({
+            publicKey
         });
-    </script>
+
+        biometricReady = true;
+
+        const btn = document.getElementById("lockBtn");
+
+        btn.disabled = false;
+        btn.classList.remove("disabled");
+
+        log("✅ Biometrics registered successfully");
+
+        alert("Biometric setup completed!");
+
+    }catch(err){
+
+        log("❌ Registration failed: " + err.message);
+
+        alert("Biometric registration failed");
+    }
+}
+
+function lockApp(){
+
+    if(!biometricReady){
+
+        alert("Setup biometrics first");
+        return;
+    }
+
+    locked = true;
+
+    document.getElementById("mainApp")
+        .classList.add("blurred");
+
+    document.getElementById("overlay")
+        .style.display = "flex";
+
+    updateStatus();
+
+    log("🔒 App locked");
+}
+
+async function authenticateUser(){
+
+    try{
+
+        log("Authenticating user...");
+
+        const publicKey = {
+
+            challenge: new Uint8Array(32),
+
+            timeout: 60000,
+
+            userVerification: "required"
+        };
+
+        await navigator.credentials.get({
+            publicKey
+        });
+
+        unlockApp();
+
+        log("✅ Authentication successful");
+
+    }catch(err){
+
+        log("❌ Authentication failed: " + err.message);
+
+        alert("Authentication failed");
+    }
+}
+
+function unlockApp(){
+
+    locked = false;
+
+    document.getElementById("mainApp")
+        .classList.remove("blurred");
+
+    document.getElementById("overlay")
+        .style.display = "none";
+
+    updateStatus();
+
+    log("🔓 App unlocked");
+}
+
+function clearLogs(){
+
+    logs.innerHTML = "";
+}
+
+document.addEventListener("visibilitychange", () => {
+
+    if(document.hidden && biometricReady){
+
+        lockApp();
+    }
+});
+
+log("🚀 App started");
+
+</script>
+
 </body>
 </html>
