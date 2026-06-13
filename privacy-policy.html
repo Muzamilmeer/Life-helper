@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a,
+        #7c3aed
+    );
+    overflow-x:hidden;
+}
+
+/* Floating Background */
+.circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(80px);
+    animation:float 8s infinite ease-in-out;
+}
+
+.circle:nth-child(1){
+    width:250px;
+    height:250px;
+    background:#00f5ff;
+    top:10%;
+    left:5%;
+}
+
+.circle:nth-child(2){
+    width:300px;
+    height:300px;
+    background:#ff00c8;
+    bottom:10%;
+    right:5%;
+}
+
+@keyframes float{
+    50%{
+        transform:translateY(-30px);
+    }
+}
+
+/* Main Card */
+.card{
+    width:90%;
+    max-width:950px;
+    padding:40px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:25px;
+    color:white;
+    box-shadow:
+    0 20px 40px rgba(0,0,0,.4),
+    inset 0 0 20px rgba(255,255,255,.1);
+
+    transform-style:preserve-3d;
+    transition:.4s;
+}
+
+.card:hover{
+    transform:rotateX(4deg) rotateY(-4deg);
+}
+
+h1{
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:15px;
+    text-shadow:0 0 15px #00f5ff;
+}
+
+.date{
+    text-align:center;
+    color:#d6d6d6;
+    margin-bottom:25px;
+}
+
+.section{
+    margin-bottom:25px;
+}
+
+.section h2{
+    color:#00f5ff;
+    margin-bottom:10px;
+}
+
+.section p{
+    color:#f0f0f0;
+    line-height:1.8;
+}
+
+.btn{
+    display:block;
+    margin:30px auto 0;
+    padding:14px 35px;
+    border:none;
+    border-radius:50px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(
+        45deg,
+        #00f5ff,
+        #7c3aed
+    );
+    box-shadow:0 0 20px rgba(0,245,255,.6);
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.08);
+}
+</style>
+</head>
+<body>
+
+<div class="circle"></div>
+<div class="circle"></div>
+
+<div class="card">
+
+    <h1>🔒 Privacy Policy</h1>
+
+    <p class="date">
+        Last Updated:
+        <span id="date"></span>
+    </p>
+
+    <div class="section">
+        <h2>Information We Collect</h2>
+        <p>
+            We may collect information such as your name,
+            email address, IP address and usage data to
+            improve our services.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>How We Use Information</h2>
+        <p>
+            Your information is used to provide services,
+            improve website performance and respond to
+            support requests.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Cookies</h2>
+        <p>
+            Our website may use cookies to enhance user
+            experience and analyze website traffic.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Security</h2>
+        <p>
+            We take reasonable measures to protect your
+            information from unauthorized access.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Contact</h2>
+        <p>
+            If you have any questions about this Privacy
+            Policy, please contact us.
+        </p>
+    </div>
+
+    <button class="btn" onclick="acceptPolicy()">
+        Accept Policy
+    </button>
+
+</div>
+
+<script>
+document.getElementById("date").innerHTML =
+new Date().toLocaleDateString();
+
+function acceptPolicy(){
+    alert("Privacy Policy Accepted ✔");
+}
+</script>
+
+</body>
+
+          </html>
